@@ -65,7 +65,6 @@ def normalize_pipeline(df):
 # ==============================================================================
 st.sidebar.header("🛠️ BrandIQ Control Panel")
 
-# Only ask for the brand name. API and Industry routing are completely automated.
 brand_name = st.sidebar.text_input("Target Brand Name", value="ClarityX")
 
 trigger_analysis = st.sidebar.button("🚀 Run Decision Intelligence Engine")
@@ -101,18 +100,22 @@ if trigger_analysis:
             input_industry = "Data Analytics"
         
         # ----------------------------------------------------------------------
-        # STAGE 2: DEEP MACRO-ARCHETYPE ROUTING POWERED BY LLM INFERENCE
+        # STAGE 2: DEEP MACRO-ARCHETYPE ROUTING (SHARPENED BY ARCHITECTURE RULES)
         # ----------------------------------------------------------------------
         archetype_routing_prompt = f"""
-        Analyze the business model of '{brand_name}', which operates in the '{input_industry}' space.
+        Analyze the structural business model and delivery layer of the enterprise '{brand_name}', which operates in the '{input_industry}' space.
+        
+        CRITICAL CORE RULE: 
+        Even if a company serves the medical, pharmaceutical, or banking industries (e.g., ClarityX, Veeva Systems, or FinTech platforms), if its core product is a software platform, data analytics engine, DNA testing kit tool, or digital SaaS product, you MUST classify it as 'value_trust' (Technology/Services) rather than 'compliance_credibility' (Regulated Infrastructure).
+        
         Classify it into exactly ONE of these four global macroeconomic quadrants:
         
-        1. volume_pull (If it is a B2C/D2C mass market consumer retail, product, or apparel brand)
-        2. value_trust (If it is a B2B enterprise company, SaaS vendor, consulting agency, tech platform, or IT analytics firm where internal talent and business relationships drive value)
-        3. scale_margin (If it is an asset-heavy manufacturer, logistics fleet, heavy industrial production, or raw supply-chain vendor)
-        4. compliance_credibility (If it is a highly regulated, high-risk entity like a commercial hospital group, pharmaceutical drug manufacturer, commercial bank, or aviation line)
+        1. volume_pull: B2C/D2C mass market consumer retail, product, food, beverage, or apparel brands.
+        2. value_trust: B2B enterprise tech companies, SaaS vendors, consulting agencies, data analytics engines, clinical diagnostics software, or IT firms where intellectual capital and software drive the brand.
+        3. scale_margin: Asset-heavy physical manufacturers, steel mills, logistics fleets, heavy industrial production, or raw supply-chain vendors.
+        4. compliance_credibility: Heavily regulated operational brick-and-mortar entities like commercial hospital groups, retail banking branches, private defense labs, or commercial aviation lines.
         
-        Respond with ONLY the exact lowercase string identifier of the chosen quadrant: either 'volume_pull', 'value_trust', 'scale_margin', or 'compliance_credibility'. Do not include punctuation, numbers, headers, or any other words.
+        Respond with ONLY the exact lowercase string identifier of the chosen quadrant: either 'volume_pull', 'value_trust', 'scale_margin', or 'compliance_credibility'. Do not include punctuation, markdown, headers, or any other words.
         """
         try:
             route_response = client.models.generate_content(model='gemini-2.5-flash', contents=archetype_routing_prompt)
@@ -169,9 +172,10 @@ if trigger_analysis:
             comm_base = 82.0 if is_heavy else 42.0
             data.append({'recorded_date': date_list[t], 'dimension': 'commercial', 'metric_name': 'price_premium_index', 'raw_value': float(max(5.0, comm_base + np.random.normal(0, 2.5)))})
             
+        # 🌟 FIXED LOGIC ROWS: Structure mapped correctly into relational indices
         data.append({'recorded_date': current_date, 'dimension': 'internal', 'metric_name': 'employee_sentiment_proxy', 'raw_value': float(mock_employee_satisfaction)})
         data.append({'recorded_date': current_date, 'dimension': 'external', 'metric_name': 'media_mention_count', 'raw_value': float(total_mentions)})
-        data.append({'recorded_date': current_date, 'dimension': 'commercial', 'metric_name': 40.50 if not is_heavy else 79.80})
+        data.append({'recorded_date': current_date, 'dimension': 'commercial', 'metric_name': 'price_premium_index', 'raw_value': 40.50 if not is_heavy else 79.80})
         
         df_raw = pd.DataFrame(data)
         df_raw['brand_name'] = brand_name
