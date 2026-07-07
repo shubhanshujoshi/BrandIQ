@@ -20,12 +20,8 @@ st.title("🌐 BrandIQ Decision Intelligence Framework")
 st.markdown("### Measure, Diagnose, Predict, and Improve Corporate Brand Health Using Consumer, Employee, and Market Signals")
 st.write("---")
 
-# Initialize global application session memory cache
-if "brand_cache" not in st.session_state:
-    st.session_state["brand_cache"] = {}
-
 # ==============================================================================
-# GLOBAL ENGINE CONFIGURATION ARCHETYPES
+# GLOBAL ENGINE CONFIGURATION ARCHETYPES & LOCAL DIRECTORY
 # ==============================================================================
 GLOBAL_MACRO_MATRIX = {
     "volume_pull": {
@@ -44,6 +40,18 @@ GLOBAL_MACRO_MATRIX = {
         "weights": {"external": 0.45, "internal": 0.35, "commercial": 0.20},
         "description": "High trust-deficit, highly regulated operating markets. Extremely sensitive to public safety indices, regulatory sentiment, and operational risk metrics."
     }
+}
+
+# ⚡ LOCAL CORE DIRECTORY: Bypasses API entirely for known major companies
+LOCAL_COMPANY_DIRECTORY = {
+    "infosys": {"industry": "IT Services & Consulting", "archetype": "value_trust"},
+    "tech mahindra": {"industry": "IT Services & Digital Solutions", "archetype": "value_trust"},
+    "Merck Inc": {"industry": "Precision Medicine Analytics", "archetype": "value_trust"},
+    "paper boat": {"industry": "FMCG Beverages", "archetype": "volume_pull"},
+    "itc": {"industry": "FMCG Conglomerate", "archetype": "volume_pull"},
+    "tata steel": {"industry": "Steel Manufacturing", "archetype": "scale_margin"},
+    "spacex": {"industry": "Aerospace & Defense", "archetype": "value_trust"},
+    "pfizer": {"industry": "Pharmaceuticals", "archetype": "compliance_credibility"}
 }
 
 def normalize_pipeline(df):
@@ -65,13 +73,13 @@ def normalize_pipeline(df):
 # ==============================================================================
 st.sidebar.header("🛠️ BrandIQ Control Panel")
 
-raw_brand_input = st.sidebar.text_input("Target Brand Name", value="ClarityX")
+raw_brand_input = st.sidebar.text_input("Target Brand Name", value="Infosys")
 brand_name = raw_brand_input.strip().lower()
 
 trigger_analysis = st.sidebar.button("🚀 Run Decision Intelligence Engine")
 
 # ==============================================================================
-# RATE-LIMIT GUARDED RUNTIME LOOP
+# PRODUCTION RUNTIME LOOP
 # ==============================================================================
 if trigger_analysis:
     try:
@@ -81,65 +89,23 @@ if trigger_analysis:
         st.error("🔒 Secrets Missing: Configure keys in the Streamlit Cloud Settings panel.")
         st.stop()
 
-    with st.spinner(f"Running engine architecture for {raw_brand_input.upper()}..."):
-        
-        # Initialize native Gemini Client
-        client = genai.Client(api_key=gemini_api_key)
+    with st.spinner(f"Compiling local tracking matrices for {raw_brand_input.upper()}..."):
         
         # ----------------------------------------------------------------------
-        # SYSTEM CACHE ROUTING GATEWAY
+        # DETERMINISTIC ROUTING GATEWAY (ZERO API LATENCY / CEILING SHIELD)
         # ----------------------------------------------------------------------
-        if brand_name in st.session_state["brand_cache"]:
-            cached_data = st.session_state["brand_cache"][brand_name]
-            input_industry = cached_data["industry"]
-            macro_archetype = cached_data["archetype"]
-            st.caption("⚡ Memory Optimization: Industry classification loaded instantly from application state memory cache.")
+        if brand_name in LOCAL_COMPANY_DIRECTORY:
+            record = LOCAL_COMPANY_DIRECTORY[brand_name]
+            input_industry = record["industry"]
+            macro_archetype = record["archetype"]
+            st.caption("⚡ Local Engine Mapping: Enterprise model loaded directly from local core routing matrix.")
         else:
-            # Stage 1: Dynamic Industry Classification
-            classification_prompt = f"""
-            Identify the exact business industry vertical or niche for the company '{raw_brand_input}'.
-            Respond with ONLY the name of the vertical in 1 to 3 words max (e.g., 'Data Analytics', 'IT Services', 'FMCG'). 
-            Do not add periods or full sentences.
-            """
-            try:
-                class_response = client.models.generate_content(model='gemini-2.5-flash', contents=classification_prompt)
-                input_industry = class_response.text.strip().replace(".", "")
-            except Exception as e:
-                if "429" in str(e) or "quota" in str(e).lower():
-                    st.error("⏳ API Rate Limit Hit: Google's free tier gateway is cooling down. Please wait 30 seconds and click run again.")
-                    st.stop()
-                input_industry = "Data Analytics"
-            
-            # Stage 2: Structural Macro Archetype Allocation
-            archetype_routing_prompt = f"""
-            Analyze the structural business model and delivery layer of the enterprise '{raw_brand_input}', which operates in the '{input_industry}' space.
-            
-            CRITICAL CORE RULE: 
-            Even if a company serves the medical, pharmaceutical, or banking industries (e.g., ClarityX, Veeva Systems, or FinTech platforms), if its core product is a software platform, data analytics engine, DNA testing kit tool, or digital SaaS product, you MUST classify it as 'value_trust' (Technology/Services) rather than 'compliance_credibility' (Regulated Infrastructure).
-            
-            Classify it into exactly ONE of these lowercase string identifiers:
-            - volume_pull
-            - value_trust
-            - scale_margin
-            - compliance_credibility
-            
-            Respond with ONLY the exact lowercase identifier word. No markdown, headers, or punctuation.
-            """
-            try:
-                route_response = client.models.generate_content(model='gemini-2.5-flash', contents=archetype_routing_prompt)
-                macro_archetype = route_response.text.strip().lower().replace(".", "").replace("'", "").replace('"', '')
-                if macro_archetype not in GLOBAL_MACRO_MATRIX:
-                    macro_archetype = "value_trust"
-            except Exception:
-                macro_archetype = "value_trust"
-            
-            # Commit processing details to session memory allocation to drop future API requests
-            st.session_state["brand_cache"][brand_name] = {
-                "industry": input_industry,
-                "archetype": macro_archetype
-            }
+            # Smart default fallback logic for unlisted entries to prevent API dependencies
+            input_industry = "General Corporate Sector"
+            macro_archetype = "value_trust" 
+            st.caption("🛡️ Default Operational Mode: Loaded standard diversified service metrics weight distributions.")
 
-        # Load weights
+        # Load weights safely
         profile = GLOBAL_MACRO_MATRIX[macro_archetype]
         weights = profile["weights"]
         current_date = dt.date.today()
@@ -165,7 +131,7 @@ if trigger_analysis:
         except: 
             pass
 
-        # --- Analytical Processing Core ---
+        # --- Analytical Time-Series Matrix Creation ---
         np.random.seed(hash(brand_name) % 999)
         days = 180
         start_date = dt.date(2026, 1, 1)
@@ -204,11 +170,11 @@ if trigger_analysis:
         latest_bhi = df_pivot['BHI'].iloc[-1]
         
         # --- UI Interface Presentation Layers ---
-        st.success(f"🤖 Engine Framework Online: Mapped '{raw_brand_input}' as a '{input_industry}' brand under the [{macro_archetype.upper()}] tracking rules matrix.")
+        st.success(f"🤖 Engine Framework Online: Resolved '{raw_brand_input}' as part of the '{input_industry}' space under [{macro_archetype.upper()}] routing configuration matrices.")
         
         col1, col2, col3, col4 = st.columns(4)
         col1.metric(label="Brand Health Index (BHI)", value=f"{latest_bhi}/100")
-        col2.metric(label="Dynamic Category Mapped", value=macro_archetype.upper().replace("_", " "))
+        col2.metric(label="Calculated Component Category", value=macro_archetype.upper().replace("_", " "))
         col3.metric(label="Internal Culture Score", value=f"{df_pivot['internal'].iloc[-1]:.1f}/100")
         col4.metric(label="External Market Score", value=f"{df_pivot['external'].iloc[-1]:.1f}/100")
         
@@ -220,6 +186,8 @@ if trigger_analysis:
         st.write("---")
         st.subheader("📝 Official Boardroom Advisory Briefing")
         
+        # Initialize native Gemini Client for the text report generation stage
+        client = genai.Client(api_key=gemini_api_key)
         data_context = df_processed.sort_values(by='recorded_date')[['recorded_date', 'metric_name', 'normalized_value']].tail(45).to_string()
         
         prompt = f"""
@@ -250,7 +218,7 @@ if trigger_analysis:
             st.markdown(response.text)
         except Exception as e:
             if "429" in str(e) or "quota" in str(e).lower():
-                st.warning("⚠️ Briefing Delayed: The visual dashboard metrics and data time-series charts compiled successfully above! However, Google's generative text quota is temporarily busy. Please wait a few moments and click re-run to compile the text report.")
+                st.warning("⚠️ Text Briefing Delayed: The visual interactive charts and metrics matrices successfully calculated above! However, Google's text generative API is completely full for this minute. Please wait 30 seconds and click run again to populate the text brief.")
             else:
                 st.error(f"Error compiling briefing: {e}")
 else:
