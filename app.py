@@ -65,7 +65,7 @@ def normalize_pipeline(df):
 # ==============================================================================
 st.sidebar.header("🛠️ BrandIQ Control Panel")
 
-brand_name = st.sidebar.text_input("Target Brand Name", value="ClarityX")
+brand_name = st.sidebar.text_input("Target Brand Name", value="Company Name")
 
 trigger_analysis = st.sidebar.button("🚀 Run Decision Intelligence Engine")
 
@@ -106,7 +106,7 @@ if trigger_analysis:
         Analyze the structural business model and delivery layer of the enterprise '{brand_name}', which operates in the '{input_industry}' space.
         
         CRITICAL CORE RULE: 
-        Even if a company serves the medical, pharmaceutical, or banking industries (e.g., ClarityX, Veeva Systems, or FinTech platforms), if its core product is a software platform, data analytics engine, DNA testing kit tool, or digital SaaS product, you MUST classify it as 'value_trust' (Technology/Services) rather than 'compliance_credibility' (Regulated Infrastructure).
+        Even if a company serves the medical, pharmaceutical, or banking industries (e.g., Startup, Veeva Systems, or FinTech platforms), if its core product is a software platform, data analytics engine, DNA testing kit tool, or digital SaaS product, you MUST classify it as 'value_trust' (Technology/Services) rather than 'compliance_credibility' (Regulated Infrastructure).
         
         Classify it into exactly ONE of these four global macroeconomic quadrants:
         
