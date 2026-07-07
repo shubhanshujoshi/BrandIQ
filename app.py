@@ -231,5 +231,3 @@ if trigger_analysis:
         st.markdown(response.text)
 else:
     st.info("👈 Type a company name into the control panel sidebar and click 'Run Decision Intelligence Engine' to initialize automation.")
-
-```
