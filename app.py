@@ -1,10 +1,3 @@
-Here is the complete, fully integrated, and ready-to-paste `app.py` code.
-
-This version replaces the old keyword routing engine with a **Dual-Stage AI Inference Hook**. When you search for a complex niche company like **ClarityX**, the system will intelligently distinguish its structural business model (an enterprise analytics tech player) from its vertical sector (healthcare) and correctly route it to the **Value & Trust** archetype.
-
-Copy and paste this entire block directly into your `app.py` file on GitHub:
-
-```python
 import streamlit as st
 import datetime as dt
 import json
