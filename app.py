@@ -20,7 +20,7 @@ st.title("🌐 BrandIQ Decision Intelligence Framework")
 st.markdown("### Measure, Diagnose, Predict, and Improve Corporate Brand Health Using Consumer, Employee, and Market Signals")
 st.write("---")
 
-# Initialize global tracking memory cache if it doesn't exist yet
+# Initialize global application session memory cache
 if "brand_cache" not in st.session_state:
     st.session_state["brand_cache"] = {}
 
@@ -65,13 +65,13 @@ def normalize_pipeline(df):
 # ==============================================================================
 st.sidebar.header("🛠️ BrandIQ Control Panel")
 
-raw_brand_input = st.sidebar.text_input("Target Brand Name", value="Company Name")
-brand_name = raw_brand_input.strip().lower() # Standardize text matching index keys
+raw_brand_input = st.sidebar.text_input("Target Brand Name", value="ClarityX")
+brand_name = raw_brand_input.strip().lower()
 
 trigger_analysis = st.sidebar.button("🚀 Run Decision Intelligence Engine")
 
 # ==============================================================================
-# SAFE RATE-LIMIT PROTECTED CORE LOOP
+# RATE-LIMIT GUARDED RUNTIME LOOP
 # ==============================================================================
 if trigger_analysis:
     try:
@@ -81,42 +81,41 @@ if trigger_analysis:
         st.error("🔒 Secrets Missing: Configure keys in the Streamlit Cloud Settings panel.")
         st.stop()
 
-    with st.spinner(f"Running secure execution pipelines for {raw_brand_input.upper()}..."):
+    with st.spinner(f"Running engine architecture for {raw_brand_input.upper()}..."):
         
-        # Initialize Gemini client using the relaxed processing engine variant
+        # Initialize native Gemini Client
         client = genai.Client(api_key=gemini_api_key)
         
         # ----------------------------------------------------------------------
-        # AUTOMATED CACHE RECOVERY MODULE (BYPASSES DUAL-STAGE API COMPLETELY)
+        # SYSTEM CACHE ROUTING GATEWAY
         # ----------------------------------------------------------------------
         if brand_name in st.session_state["brand_cache"]:
             cached_data = st.session_state["brand_cache"][brand_name]
             input_industry = cached_data["industry"]
             macro_archetype = cached_data["archetype"]
-            st.caption("⚡ Memory Optimization: Industry categorization loaded instantly from application state memory.")
+            st.caption("⚡ Memory Optimization: Industry classification loaded instantly from application state memory cache.")
         else:
-            # ------------------------------------------------------------------
-            # STAGE 1: FETCH SPECIFIC INDUSTRY TEXT INDICATION
-            # ------------------------------------------------------------------
+            # Stage 1: Dynamic Industry Classification
             classification_prompt = f"""
             Identify the exact business industry vertical or niche for the company '{raw_brand_input}'.
             Respond with ONLY the name of the vertical in 1 to 3 words max (e.g., 'Data Analytics', 'IT Services', 'FMCG'). 
             Do not add periods or full sentences.
             """
             try:
-                class_response = client.models.generate_content(model='gemini-1.5-flash-002', contents=classification_prompt)
+                class_response = client.models.generate_content(model='gemini-2.5-flash', contents=classification_prompt)
                 input_industry = class_response.text.strip().replace(".", "")
-            except Exception:
+            except Exception as e:
+                if "429" in str(e) or "quota" in str(e).lower():
+                    st.error("⏳ API Rate Limit Hit: Google's free tier gateway is cooling down. Please wait 30 seconds and click run again.")
+                    st.stop()
                 input_industry = "Data Analytics"
             
-            # ------------------------------------------------------------------
-            # STAGE 2: DEEP MACRO-ARCHETYPE ROUTING WITH INLINE RULES
-            # ------------------------------------------------------------------
+            # Stage 2: Structural Macro Archetype Allocation
             archetype_routing_prompt = f"""
             Analyze the structural business model and delivery layer of the enterprise '{raw_brand_input}', which operates in the '{input_industry}' space.
             
             CRITICAL CORE RULE: 
-            Even if a company serves the medical, pharmaceutical, or banking industries (e.g., Startup or FinTech platforms), if its core product is a software platform, data analytics engine, DNA testing kit tool, or digital SaaS product, you MUST classify it as 'value_trust' (Technology/Services) rather than 'compliance_credibility' (Regulated Infrastructure).
+            Even if a company serves the medical, pharmaceutical, or banking industries (e.g., ClarityX, Veeva Systems, or FinTech platforms), if its core product is a software platform, data analytics engine, DNA testing kit tool, or digital SaaS product, you MUST classify it as 'value_trust' (Technology/Services) rather than 'compliance_credibility' (Regulated Infrastructure).
             
             Classify it into exactly ONE of these lowercase string identifiers:
             - volume_pull
@@ -127,25 +126,25 @@ if trigger_analysis:
             Respond with ONLY the exact lowercase identifier word. No markdown, headers, or punctuation.
             """
             try:
-                route_response = client.models.generate_content(model='gemini-1.5-flash-002', contents=archetype_routing_prompt)
+                route_response = client.models.generate_content(model='gemini-2.5-flash', contents=archetype_routing_prompt)
                 macro_archetype = route_response.text.strip().lower().replace(".", "").replace("'", "").replace('"', '')
                 if macro_archetype not in GLOBAL_MACRO_MATRIX:
                     macro_archetype = "value_trust"
             except Exception:
                 macro_archetype = "value_trust"
             
-            # Save to session memory so these two API requests never run again for this brand
+            # Commit processing details to session memory allocation to drop future API requests
             st.session_state["brand_cache"][brand_name] = {
                 "industry": input_industry,
                 "archetype": macro_archetype
             }
 
-        # Extract the configuration weights
+        # Load weights
         profile = GLOBAL_MACRO_MATRIX[macro_archetype]
         weights = profile["weights"]
         current_date = dt.date.today()
         
-        # --- Live Ingestion Pipeline Layers ---
+        # --- Live Ingestion Proxy Pipes ---
         total_mentions = 15.0
         try:
             search_url = f"https://google.serper.dev/news?q={raw_brand_input}"
@@ -166,7 +165,7 @@ if trigger_analysis:
         except: 
             pass
 
-        # --- Analytical Time-Series Matrix Creation ---
+        # --- Analytical Processing Core ---
         np.random.seed(hash(brand_name) % 999)
         days = 180
         start_date = dt.date(2026, 1, 1)
@@ -204,7 +203,7 @@ if trigger_analysis:
         
         latest_bhi = df_pivot['BHI'].iloc[-1]
         
-        # --- UI Dashboard Presentation ---
+        # --- UI Interface Presentation Layers ---
         st.success(f"🤖 Engine Framework Online: Mapped '{raw_brand_input}' as a '{input_industry}' brand under the [{macro_archetype.upper()}] tracking rules matrix.")
         
         col1, col2, col3, col4 = st.columns(4)
@@ -217,7 +216,7 @@ if trigger_analysis:
         chart_data = df_pivot[['BHI', 'internal', 'external', 'commercial']]
         st.line_chart(chart_data)
         
-        # --- AI Executive Advisory Presentation ---
+        # --- AI Advisory Documentation Generative Module ---
         st.write("---")
         st.subheader("📝 Official Boardroom Advisory Briefing")
         
@@ -247,11 +246,12 @@ if trigger_analysis:
         """
         
         try:
-            response = client.models.generate_content(model='brandiq-core-processing-engine', contents=prompt)
-            # Fallback to general model syntax if custom engine flags trigger validation issues
-        except Exception:
-            response = client.models.generate_content(model='gemini-1.5-flash-002', contents=prompt)
-            
-        st.markdown(response.text)
+            response = client.models.generate_content(model='gemini-2.5-flash', contents=prompt)
+            st.markdown(response.text)
+        except Exception as e:
+            if "429" in str(e) or "quota" in str(e).lower():
+                st.warning("⚠️ Briefing Delayed: The visual dashboard metrics and data time-series charts compiled successfully above! However, Google's generative text quota is temporarily busy. Please wait a few moments and click re-run to compile the text report.")
+            else:
+                st.error(f"Error compiling briefing: {e}")
 else:
     st.info("👈 Type a company name into the control panel sidebar and click 'Run Decision Intelligence Engine' to initialize automation.")
