@@ -104,7 +104,7 @@ if trigger_analysis:
             Do not add periods or full sentences.
             """
             try:
-                class_response = client.models.generate_content(model='gemini-1.5-flash', contents=classification_prompt)
+                class_response = client.models.generate_content(model='gemini-1.5-flash-002', contents=classification_prompt)
                 input_industry = class_response.text.strip().replace(".", "")
             except Exception:
                 input_industry = "Data Analytics"
@@ -127,7 +127,7 @@ if trigger_analysis:
             Respond with ONLY the exact lowercase identifier word. No markdown, headers, or punctuation.
             """
             try:
-                route_response = client.models.generate_content(model='gemini-1.5-flash', contents=archetype_routing_prompt)
+                route_response = client.models.generate_content(model='gemini-1.5-flash-002', contents=archetype_routing_prompt)
                 macro_archetype = route_response.text.strip().lower().replace(".", "").replace("'", "").replace('"', '')
                 if macro_archetype not in GLOBAL_MACRO_MATRIX:
                     macro_archetype = "value_trust"
@@ -250,7 +250,7 @@ if trigger_analysis:
             response = client.models.generate_content(model='brandiq-core-processing-engine', contents=prompt)
             # Fallback to general model syntax if custom engine flags trigger validation issues
         except Exception:
-            response = client.models.generate_content(model='gemini-1.5-flash', contents=prompt)
+            response = client.models.generate_content(model='gemini-1.5-flash-002', contents=prompt)
             
         st.markdown(response.text)
 else:
